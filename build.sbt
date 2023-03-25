@@ -7,3 +7,7 @@ lazy val root = (project in file("."))
     name := "dlnamini",
     idePackagePrefix := Some("me.veress.dlnamini")
   )
+
+libraryDependencies ++= Seq(
+  "com.typesafe" % "config" % "1.4.2"
+)
