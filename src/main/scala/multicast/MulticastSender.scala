@@ -16,10 +16,10 @@ object MulticastSender {
   }
 
   def sendMessages(ip: String, port: Int, messages: Seq[String]): Unit = {
-    val senderSocket = openSocket(port)
+    val senderSocket = openSocket(DLNAMiniConfig.dlnaPort)
     val targetSocket = new InetSocketAddress(InetAddress.getByName(ip), port)
     for (message <- messages) {
-      println(
+      /*println(
         s"""
           |--------------------- SEND MESSAGE ----------------------
           |FROM:
@@ -33,7 +33,8 @@ object MulticastSender {
           |$message
           |=========================================================
           |""".stripMargin
-      )
+      )*/
+      println(s"Send UDP Message from ||port ${senderSocket.getPort}|| to ||${targetSocket.getHostName} port ${targetSocket.getPort}||")
       senderSocket.send(new DatagramPacket(message.getBytes, message.length, targetSocket))
     }
     senderSocket.close()

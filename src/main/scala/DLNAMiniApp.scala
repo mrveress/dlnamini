@@ -3,6 +3,9 @@ package me.veress.dlnamini
 import fileinfo.*
 import multicast.UpnpDiscoveryManager
 
+import me.veress.dlnamini.config.DLNAMiniConfig
+import me.veress.dlnamini.http.HttpServer
+
 import java.nio.file.{Files, Paths}
 import java.util.concurrent.Executors
 import scala.io.StdIn.readLine
@@ -21,16 +24,21 @@ def main(): Unit = {
   }
   println(s"File accepted: $filePath")
   FileInfoParser.parseVideoInfo(filePath) match {
-    case Some(videoInfo) => println(videoInfo)
+    case Some(videoInfo) => {
+      println(videoInfo)
+      DLNAMiniConfig.videoInfo = videoInfo
+
+      HttpServer.run()
+
+      discovery = new UpnpDiscoveryManager
+
+      discovery.announce(Executors.newScheduledThreadPool(1))
+      discovery.startListening()
+
+      shutdownHook()
+    }
     case _ => println("Incorrect video")
   }
-
-  discovery = new UpnpDiscoveryManager
-
-  discovery.announce(Executors.newScheduledThreadPool(1))
-  discovery.startListening()
-
-  shutdownHook()
 }
 
 def inputPath(): String = {
@@ -43,7 +51,7 @@ def shutdownHook(): Unit = {
     override def run(): Unit = {
       try {
         discovery.byebye()
-        //httpServer.stop()
+        HttpServer.stop()
         Thread.sleep(500)
       } catch
         case e: Exception =>

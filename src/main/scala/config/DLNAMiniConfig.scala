@@ -2,6 +2,7 @@ package me.veress.dlnamini
 package config
 
 import com.typesafe.config.{Config, ConfigFactory}
+import me.veress.dlnamini.fileinfo.VideoInfo
 
 import java.net.{InetAddress, NetworkInterface}
 import java.util.UUID.{nameUUIDFromBytes, randomUUID}
@@ -29,6 +30,10 @@ object DLNAMiniConfig {
     result
   }
 
+  val serverName: String = getString("app.serverName")
+
+  val ffmpegOpts: String = getString("app.ffmpegOpts")
+
   val httpIp: String = getString("app.http.ip")
   val httpPort: Int = getInt("app.http.port")
 
@@ -38,4 +43,10 @@ object DLNAMiniConfig {
   val dlnaSenderSocketTimeout: Int = getInt("app.dlna.senderSocketTimeout")
   val dlnaListenerTimeToLive: Int = getInt("app.dlna.listenerTimeToLive")
   val dlnaListenerBufferSize: Int = getInt("app.dlna.listenerBufferSize")
+
+  val imageServer: String = getString("app.image.server")
+  val imageFolder: String = getString("app.image.folder")
+  val imageVideo: String = getString("app.image.video")
+
+  var videoInfo : VideoInfo = _
 }

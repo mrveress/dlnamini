@@ -51,16 +51,36 @@ class UpnpDiscoveryManager {
 
   private def discoveryMessageReceived(packet: DatagramPacket): Unit = {
     val message: String = new String(packet.getData)
+    val remoteAddress = extractAddress(packet)
+    val remotePort = extractPort(packet)
+
+    println(
+      s"""
+         |----------------------RANDOM PACKET RECIEVED-----------------------
+         |FROM: $remoteAddress:$remotePort
+         |MESSAGE: ${new String(packet.getData, packet.getOffset, packet.getLength)}
+         |============================================================
+         |""".stripMargin
+    )
 
     if (message.startsWith(M_SEARCH)) {
-      val remoteAddress = extractAddress(packet)
-      val remotePort = extractPort(packet)
+
+      println(
+        s"""
+           |----------------------M-SEARCH PACKET RECIEVED-----------------------
+           |FROM: $remoteAddress:$remotePort
+           |MESSAGE: ${new String(packet.getData, packet.getOffset, packet.getLength)}
+           |============================================================
+           |""".stripMargin
+      )
 
       if (message.contains(CONTENT_DIRECTORY)) {
         MulticastSender.sendMessages(remoteAddress, remotePort, List(MessageFactory.contentDirectoryMsg()))
       } else if (message.contains(ROOT_DEVICE)) {
         MulticastSender.sendMessages(remoteAddress, remotePort, List(MessageFactory.rootDeviceMsg()))
       } else if (message.contains(MEDIA_SERVER)) {
+        MulticastSender.sendMessages(remoteAddress, remotePort, List(MessageFactory.mediaServerMsg()))
+      } else if (message.contains("ssdp:discover")) {
         MulticastSender.sendMessages(remoteAddress, remotePort, List(MessageFactory.mediaServerMsg()))
       }
     }

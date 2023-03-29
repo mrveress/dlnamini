@@ -10,7 +10,7 @@ import java.util.TimeZone
 
 object FileInfoParser {
   private val VIDEO_INFO_PATTERN: Regex = """Duration: ([\d:.]+),.*bitrate: (\d+).*Stream.*Video.*, (\d+)x(\d+) \[""".r.unanchored
-
+  
   def parseVideoInfo(filePath: String): Option[VideoInfo] = {
     val ffprobeOutput = getFfprobeInfo(filePath)
     ffprobeOutput match {

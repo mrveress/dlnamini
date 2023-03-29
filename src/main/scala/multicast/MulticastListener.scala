@@ -29,13 +29,6 @@ object MulticastListener {
             while (!executor.isShutdown) {
               try {
                 socket.receive(packet)
-                println(
-                  s"""
-                     |----------------------PACKET RECIEVED-----------------------
-                     |${new String(packet.getData, packet.getOffset, packet.getLength)}
-                     |============================================================
-                     |""".stripMargin
-                )
                 callback(packet)
               } catch {
                 case e: SocketTimeoutException => ()
