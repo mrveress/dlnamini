@@ -1,19 +1,19 @@
 package me.veress.dlnamini
 package http
 
-import com.sun.net.httpserver.{HttpExchange, HttpHandler}
 import config.DLNAMiniConfig
+import http.response.*
 import stream.FfmpegTranscodingStreamer
 
-import me.veress.dlnamini.http.response.{ConnectionManager, ConnectionManagerPost, ContentDirectory, ContentDirectoryBrowse, ContentDirectoryRoot, ContentDirectoryCapabilities, Description}
+import com.sun.net.httpserver.{HttpExchange, HttpHandler}
 
 import java.io.InputStream
 import scala.collection.mutable.ListBuffer
-import xml.{Elem, XML}
+import scala.xml.{Elem, XML}
 
 object HttpServerHandler extends HttpHandler {
 
-  private def responseDeviceDescription(exchange: HttpExchange) = {
+  private def responseDeviceDescription(exchange: HttpExchange): Unit = {
     val headers = exchange.getResponseHeaders
     headers.set("Content-Type","text/xml; charset=\"utf-8\"")
     headers.set("Cache-Control",  "no-cache")
@@ -22,13 +22,13 @@ object HttpServerHandler extends HttpHandler {
     headers.set("Connection", "keep-alive")
 
     val responseBody = exchange.getResponseBody
-    val response = buildResponse(Description.xml())
+    val response = buildResponse(Description.xml)
     exchange.sendResponseHeaders(200, response.getBytes.length)
     responseBody.write(response.getBytes)
     responseBody.close()
   }
 
-  private def responseContentDirectory(exchange: HttpExchange) = {
+  private def responseContentDirectory(exchange: HttpExchange): Unit = {
     val headers = exchange.getResponseHeaders
     headers.set("Content-Type", "text/xml; charset=\"utf-8\"")
     headers.set("Cache-Control", "no-cache")
@@ -43,7 +43,7 @@ object HttpServerHandler extends HttpHandler {
     responseBody.close()
   }
 
-  private def responseConnectionManager(exchange: HttpExchange) = {
+  private def responseConnectionManager(exchange: HttpExchange): Unit = {
     val headers = exchange.getResponseHeaders
     headers.set("Content-Type", "text/xml; charset=\"utf-8\"")
     headers.set("Cache-Control", "no-cache")
@@ -80,7 +80,7 @@ object HttpServerHandler extends HttpHandler {
     responseBody.close()
   }
 
-  private def responsePlayStream(exchange: HttpExchange) = {
+  private def responsePlayStream(exchange: HttpExchange): Unit = {
     val headers = exchange.getResponseHeaders
     headers.set("TransferMode.DLNA.ORG", "Streaming")
     headers.set("Content-Type", "video/mpeg")
@@ -92,7 +92,7 @@ object HttpServerHandler extends HttpHandler {
     streamer.transcodeAndStream(exchange.getResponseBody)
   }
 
-  private def responsePostContentDirectory(exchange: HttpExchange) = {
+  private def responsePostContentDirectory(exchange: HttpExchange): Unit = {
     val headers = exchange.getResponseHeaders
     val responseBody = exchange.getResponseBody
     var responseBodyData: String = ""
@@ -104,10 +104,10 @@ object HttpServerHandler extends HttpHandler {
     if ((requestXml \\ "BrowseFlag").nonEmpty) {
       // is this a browse directory request?
       if ("0/0".equalsIgnoreCase((requestXml \\ "ObjectID").text)) {
-        responseBodyData = buildResponse(ContentDirectoryBrowse.xml())
+        responseBodyData = buildResponse(ContentDirectoryBrowse.xml)
         // otherwise it is treated as a browse root directory request
       } else {
-        responseBodyData = buildResponse(ContentDirectoryRoot.xml())
+        responseBodyData = buildResponse(ContentDirectoryRoot.xml)
       }
     } else {
       responseBodyData = buildResponse(ContentDirectoryCapabilities.xml)
@@ -118,7 +118,7 @@ object HttpServerHandler extends HttpHandler {
     responseBody.close()
   }
 
-  private def responsePostConnectionManager(exchange: HttpExchange) = {
+  private def responsePostConnectionManager(exchange: HttpExchange): Unit = {
     val headers = exchange.getResponseHeaders
     headers.set("Content-Type", "text/xml; charset=\"utf-8\"")
 
@@ -130,12 +130,15 @@ object HttpServerHandler extends HttpHandler {
   }
 
   override def handle(exchange: HttpExchange): Unit = {
-    println(
+    /*println(
       s"""
          |--------------------------HTTP REQUEST---------------------------
+         |FROM: ${exchange.getRemoteAddress.getHostName}:${exchange.getRemoteAddress.getPort}
          |METHOD: ${exchange.getRequestMethod}
          |URI: ${exchange.getRequestURI.toString}
+         |=================================================================
          |""".stripMargin)
+    */
 
     exchange.getRequestMethod match {
       case "GET" => exchange.getRequestURI.toString match {

@@ -1,10 +1,9 @@
 package me.veress.dlnamini
 
+import config.DLNAMiniConfig
 import fileinfo.*
+import http.HttpServer
 import multicast.UpnpDiscoveryManager
-
-import me.veress.dlnamini.config.DLNAMiniConfig
-import me.veress.dlnamini.http.HttpServer
 
 import java.nio.file.{Files, Paths}
 import java.util.concurrent.Executors
@@ -24,7 +23,7 @@ def main(): Unit = {
   }
   println(s"File accepted: $filePath")
   FileInfoParser.parseVideoInfo(filePath) match {
-    case Some(videoInfo) => {
+    case Some(videoInfo) =>
       println(videoInfo)
       DLNAMiniConfig.videoInfo = videoInfo
 
@@ -36,7 +35,6 @@ def main(): Unit = {
       discovery.startListening()
 
       shutdownHook()
-    }
     case _ => println("Incorrect video")
   }
 }
@@ -54,7 +52,7 @@ def shutdownHook(): Unit = {
         HttpServer.stop()
         Thread.sleep(500)
       } catch
-        case e: Exception =>
+        case _: Exception =>
     }
   })
 }

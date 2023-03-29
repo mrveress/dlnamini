@@ -1,8 +1,9 @@
 package me.veress.dlnamini
 package config
 
+import fileinfo.VideoInfo
+
 import com.typesafe.config.{Config, ConfigFactory}
-import me.veress.dlnamini.fileinfo.VideoInfo
 
 import java.net.{InetAddress, NetworkInterface}
 import java.util.UUID.{nameUUIDFromBytes, randomUUID}
@@ -10,11 +11,11 @@ import java.util.UUID.{nameUUIDFromBytes, randomUUID}
 object DLNAMiniConfig {
   private val config: Config = ConfigFactory.load("application.conf")
 
-  def getString(configName: String): String = {
+  private def getString(configName: String): String = {
     config.getString(configName)
   }
 
-  def getInt(configName: String): Int = {
+  private def getInt(configName: String): Int = {
     config.getInt(configName)
   }
 
@@ -39,8 +40,8 @@ object DLNAMiniConfig {
 
   val dlnaIp: String = getString("app.dlna.ip")
   val dlnaPort: Int = getInt("app.dlna.port")
-  val dlnaSenderTimeToLive: Int = getInt("app.dlna.senderTimeToLive")
-  val dlnaSenderSocketTimeout: Int = getInt("app.dlna.senderSocketTimeout")
+  //val dlnaSenderTimeToLive: Int = getInt("app.dlna.senderTimeToLive")
+  //val dlnaSenderSocketTimeout: Int = getInt("app.dlna.senderSocketTimeout")
   val dlnaListenerTimeToLive: Int = getInt("app.dlna.listenerTimeToLive")
   val dlnaListenerBufferSize: Int = getInt("app.dlna.listenerBufferSize")
 

@@ -3,8 +3,10 @@ package http.response
 
 import config.DLNAMiniConfig
 
+import scala.xml.Elem
+
 object ContentDirectoryRoot {
-  def xml() = 
+  def xml: Elem =
     <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
       <s:Body>
         <u:BrowseResponse xmlns:u="urn:schemas-upnp-org:service:ContentDirectory:1">

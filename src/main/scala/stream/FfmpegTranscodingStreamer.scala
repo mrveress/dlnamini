@@ -12,7 +12,7 @@ class FfmpegTranscodingStreamer {
   private val FFMPEG_COMMAND: String = "ffmpeg"
   private val FFMPEG_OPTS: Array[String] = DLNAMiniConfig.ffmpegOpts.split(" ")
 
-  def transcodeAndStream(outputStream: OutputStream) = {
+  def transcodeAndStream(outputStream: OutputStream): Unit = {
     // see http://stackoverflow.com/questions/956323/capturing-large-amounts-of-output-from-apache-commons-exec
     val commandLine = new CommandLine(FFMPEG_COMMAND)
     val options = Array("-i", DLNAMiniConfig.videoInfo.filePath) ++ FFMPEG_OPTS
@@ -29,8 +29,8 @@ class FfmpegTranscodingStreamer {
 
       // start process asynchronously
       executor.execute(commandLine, new ExecuteResultHandler() {
-        def onProcessComplete(c: Int) = {}
-        def onProcessFailed(e: ExecuteException) = {}
+        def onProcessComplete(c: Int): Unit = {}
+        def onProcessFailed(e: ExecuteException): Unit = {}
       })
 
       val buffer = new Array[Byte](BUFSIZE)
@@ -45,9 +45,8 @@ class FfmpegTranscodingStreamer {
       }
       outputStream.close()
     } catch {
-      case e => {
+      case _: Throwable =>
         executor.getWatchdog.destroyProcess()
-      }
     }
   }
 }

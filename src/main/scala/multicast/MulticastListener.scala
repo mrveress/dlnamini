@@ -5,22 +5,21 @@ import config.*
 
 import java.net.{DatagramPacket, InetAddress, InetSocketAddress, MulticastSocket, NetworkInterface, SocketTimeoutException}
 import java.util.concurrent.{ExecutorService, Executors}
+import scala.util.Random
 
 object MulticastListener {
   private var executor: Option[ExecutorService] = createExecutor()
 
-  private def openSocket(): MulticastSocket = {
-    val socket = SocketFactory.openSocket(DLNAMiniConfig.dlnaIp, DLNAMiniConfig.dlnaPort)
-    socket.setTimeToLive(DLNAMiniConfig.dlnaListenerTimeToLive)
-    socket.setReuseAddress(true)
-    socket
-  }
-
   def listen(callback: DatagramPacket => Unit): Unit = {
-    val socket = openSocket()
-
     val buffer = Array.ofDim[Byte](DLNAMiniConfig.dlnaListenerBufferSize)
     val packet = new DatagramPacket(buffer, buffer.length)
+
+    val socket: MulticastSocket = new MulticastSocket(DLNAMiniConfig.dlnaPort)
+    //socket.joinGroup(InetAddress.getByName(DLNAMiniConfig.dlnaIp))
+    val mcastaddr = new InetSocketAddress(InetAddress.getByName(DLNAMiniConfig.dlnaIp), DLNAMiniConfig.dlnaPort)
+    socket.joinGroup(mcastaddr, NetworkInterface.getByInetAddress(InetAddress.getByName(DLNAMiniConfig.dlnaIp)))
+    socket.setTimeToLive(DLNAMiniConfig.dlnaListenerTimeToLive)
+    socket.setReuseAddress(true)
 
     executor match {
       case Some(executor: ExecutorService) =>
@@ -31,7 +30,7 @@ object MulticastListener {
                 socket.receive(packet)
                 callback(packet)
               } catch {
-                case e: SocketTimeoutException => ()
+                case _: SocketTimeoutException => ()
               }
             }
             socket.close()

@@ -5,7 +5,8 @@ ThisBuild / scalaVersion := "3.2.2"
 lazy val root = (project in file("."))
   .settings(
     name := "dlnamini",
-    idePackagePrefix := Some("me.veress.dlnamini")
+    idePackagePrefix := Some("me.veress.dlnamini"),
+    assembly/assemblyJarName := "dlnamini.jar"
   )
 
 libraryDependencies ++= Seq(

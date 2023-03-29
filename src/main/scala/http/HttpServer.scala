@@ -8,7 +8,7 @@ import java.net.{InetAddress, InetSocketAddress}
 import java.util.concurrent.Executors
 
 object HttpServer {
-  private var server: httpserver.HttpServer = null
+  private var server: httpserver.HttpServer = _
 
   def run(): Unit = {
     server = httpserver.HttpServer.create(

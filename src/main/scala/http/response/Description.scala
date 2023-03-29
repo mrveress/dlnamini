@@ -3,8 +3,10 @@ package http.response
 
 import config.DLNAMiniConfig
 
+import scala.xml.Elem
+
 object Description {
-  def xml() =
+  def xml: Elem =
     <root xmlns:dlna="urn:schemas-dlna-org:device-1-0" xmlns="urn:schemas-upnp-org:device-1-0">
       <specVersion>
         <major>1</major>

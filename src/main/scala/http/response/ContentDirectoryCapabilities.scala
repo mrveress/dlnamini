@@ -1,8 +1,10 @@
 package me.veress.dlnamini
 package http.response
 
+import scala.xml.Elem
+
 object ContentDirectoryCapabilities {
-  def xml =
+  def xml: Elem =
     <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
       <s:Body>
         <u:GetSortCapabilitiesResponse xmlns:u="urn:schemas-upnp-org:service:ContentDirectory:1">

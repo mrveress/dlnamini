@@ -5,6 +5,7 @@ import config.DLNAMiniConfig
 
 import java.net.DatagramPacket
 import java.util.concurrent.{ScheduledExecutorService, ScheduledFuture, TimeUnit}
+import scala.annotation.unused
 
 class UpnpDiscoveryManager {
   private val SENDING_INTERVAL = 10
@@ -45,6 +46,7 @@ class UpnpDiscoveryManager {
     MulticastListener.listen(discoveryMessageReceived)
   }
 
+  @unused
   def stopListening(): Unit = {
     MulticastListener.stopExecutor()
   }
@@ -54,25 +56,25 @@ class UpnpDiscoveryManager {
     val remoteAddress = extractAddress(packet)
     val remotePort = extractPort(packet)
 
-    println(
+    /*println(
       s"""
          |----------------------RANDOM PACKET RECIEVED-----------------------
          |FROM: $remoteAddress:$remotePort
          |MESSAGE: ${new String(packet.getData, packet.getOffset, packet.getLength)}
          |============================================================
          |""".stripMargin
-    )
+    )*/
 
     if (message.startsWith(M_SEARCH)) {
 
-      println(
+      /*println(
         s"""
            |----------------------M-SEARCH PACKET RECIEVED-----------------------
            |FROM: $remoteAddress:$remotePort
            |MESSAGE: ${new String(packet.getData, packet.getOffset, packet.getLength)}
            |============================================================
            |""".stripMargin
-      )
+      )*/
 
       if (message.contains(CONTENT_DIRECTORY)) {
         MulticastSender.sendMessages(remoteAddress, remotePort, List(MessageFactory.contentDirectoryMsg()))
@@ -81,7 +83,7 @@ class UpnpDiscoveryManager {
       } else if (message.contains(MEDIA_SERVER)) {
         MulticastSender.sendMessages(remoteAddress, remotePort, List(MessageFactory.mediaServerMsg()))
       } else if (message.contains("ssdp:discover")) {
-        MulticastSender.sendMessages(remoteAddress, remotePort, List(MessageFactory.mediaServerMsg()))
+        MulticastSender.sendMessages(remoteAddress, remotePort, List(MessageFactory.rootDeviceMsg()))
       }
     }
   }

@@ -1,8 +1,10 @@
 package me.veress.dlnamini
 package http.response
 
+import scala.xml.Elem
+
 object ConnectionManager {
-  def xml = <scpd xmlns="urn:schemas-upnp-org:service-1-0">
+  def xml: Elem = <scpd xmlns="urn:schemas-upnp-org:service-1-0">
     <specVersion>
       <major>1</major>
       <minor>0</minor>

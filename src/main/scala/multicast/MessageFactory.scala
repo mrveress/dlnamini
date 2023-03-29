@@ -87,6 +87,7 @@ object MessageFactory {
       createUsn("::urn:schemas-upnp-org:service:ConnectionManager:1") + LF
 
   private def createHost() = s"HOST: ${DLNAMiniConfig.dlnaIp}:${DLNAMiniConfig.dlnaPort}$LF"
+  //noinspection HttpUrlsUsage
   private def createLocation() = s"LOCATION: http://${DLNAMiniConfig.httpIp}:${DLNAMiniConfig.httpPort}$DESCRIPTION_RESOURCE$LF"
   private def createUsn(urn: String) = s"USN: uuid:${DLNAMiniConfig.getUuid}$urn$LF"
 }
